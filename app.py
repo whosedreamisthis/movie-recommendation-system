@@ -11,6 +11,10 @@ model = joblib.load('models/svd_model.pkl')
 movies_df = pd.read_csv('data/movies.csv')
 ratings_df = pd.read_csv('data/ratings.csv')
 
+@app.route('/', methods=['GET'])
+def home():
+    return {"message": "Welcome to the Movie Recommendation API! Use /recommend?userId=1 to get results."}
+
 @app.route('/recommend', methods=['GET'])
 def recommend():
     user_id = request.args.get('userId')
