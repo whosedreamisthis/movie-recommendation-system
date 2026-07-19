@@ -17,18 +17,18 @@ def home():
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
-    user_id = request.args.get('userId')
-    if not user_id:
-        return jsonify({"error": "userId is required"}), 400
+    # Get the userId from arguments
+    user_id_param = request.args.get('userId')
     
-    # Call your prediction logic
-    # Note: Make sure get_readable_recommendations is defined 
-    # or imported in app.py
-    try:
-        recommendations = get_readable_recommendations(int(user_id), n=10)
-        return jsonify(recommendations.to_dict(orient='records'))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Check if user_id_param exists and is digits (to prevent error)
+    if user_id_param is None or not user_id_param.isdigit():
+        return jsonify({"error": "Invalid or missing userId"}), 400
+    
+    user_id = int(user_id_param)
+    
+    # Now proceed with your existing logic
+    recommendations = get_readable_recommendations(user_id)
+    return jsonify(recommendations.to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run()
