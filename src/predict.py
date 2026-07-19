@@ -1,11 +1,21 @@
 import joblib
 import pandas as pd
+import os
+
+# Get the directory where predict.py is located
+PREDICT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define paths relative to the PREDICT_DIR
+# We move up one level (..) from src/ to access models/ and data/
+MODEL_PATH = os.path.join(PREDICT_DIR, '..', 'models', 'svd_model.pkl')
+MOVIES_PATH = os.path.join(PREDICT_DIR, '..', 'data', 'movies.csv')
+RATINGS_PATH = os.path.join(PREDICT_DIR, '..', 'data', 'ratings.csv')
 
 def get_readable_recommendations(user_id, n=10):
-    # 1. Load model and data
-    model = joblib.load('../models/svd_model.pkl')
-    movies_df = pd.read_csv('../data/movies.csv')
-    ratings_df = pd.read_csv('../data/ratings.csv')
+    # 1. Load model and data using robust paths
+    model = joblib.load(MODEL_PATH)
+    movies_df = pd.read_csv(MOVIES_PATH)
+    ratings_df = pd.read_csv(RATINGS_PATH)
     
     # Get all movie IDs
     all_movie_ids = movies_df['movieId'].unique()
@@ -29,9 +39,9 @@ def get_readable_recommendations(user_id, n=10):
     return recommendations[['movieId', 'title', 'genres']]
 
 def validate_recommendations(user_id, n=5):
-    # 1. Load data
-    movies_df = pd.read_csv('../data/movies.csv')
-    ratings_df = pd.read_csv('../data/ratings.csv')
+    # 1. Load data using robust paths
+    movies_df = pd.read_csv(MOVIES_PATH)
+    ratings_df = pd.read_csv(RATINGS_PATH)
     
     # 2. Get history
     user_history = ratings_df[ratings_df['userId'] == user_id].sort_values(by='rating', ascending=False)
